@@ -18,7 +18,7 @@ function editTodo(e, todoItem) {
         ? { ...todo, text: editValue, date: editDate }
         : todo
     );
-    localStorage.setItem("todoList", JSON.stringify(todoList));
+    saveTodos();
     todoItem.setAttribute("disabled", true);
     e.target.innerHTML = "수정";
   }
@@ -28,7 +28,7 @@ function deleteTodo(e) {
   const removeTodo = e.target.parentNode;
   todos.removeChild(removeTodo);
   todoList = todoList.filter((todo) => todo.id !== +removeTodo.id);
-  localStorage.setItem("todoList", JSON.stringify(todoList));
+  saveTodos();
 }
 
 function addTodo(todo) {
@@ -47,6 +47,7 @@ function addTodo(todo) {
   list.appendChild(deleteBtn);
   list.id = todoList.length + 1;
   todos.appendChild(list);
+  saveTodos();
 }
 
 function createTodo(e) {
@@ -60,11 +61,29 @@ function createTodo(e) {
     date: date,
   };
   todoList.push(todoObj);
-  localStorage.setItem("todoList", JSON.stringify(todoList));
+  saveTodos();
   todoInput.value = "";
 }
 
+function saveTodos() {
+  localStorage.setItem("todoList", JSON.stringify(todoList));
+}
+
+function localTodos() {
+  const getTodoList = localStorage.getItem("todoList");
+  if (getTodoList !== null) {
+    const parsedTodoList = JSON.parse(getTodoList);
+    parsedTodoList.forEach((todo) => {
+      console.log(todo);
+      addTodo(todo.text);
+      todoList.push(todo);
+      saveTodos();
+    });
+  }
+}
+
 function init() {
+  localTodos();
   todoForm.addEventListener("submit", createTodo);
 }
 init();
