@@ -16,9 +16,11 @@ function createTodo(e) {
   e.preventDefault();
   const todo = todoInput.value;
   addTodo(todo);
+  let date = new Date();
   const todoObj = {
     text: todo,
     id: todoList.length + 1,
+    date: date,
   };
   todoList.push(todoObj);
   localStorage.setItem("todoList", JSON.stringify(todoList));
