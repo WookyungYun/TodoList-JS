@@ -15,7 +15,7 @@ function removeAllchild(div) {
 
 function updateTodoList(todoList) {
   const todo = todoList.map((todo) => todo.text);
-  todo.map((todo) => addTodo(todo));
+  todo.forEach((todo) => addTodo(todo));
 }
 
 function handleChange() {
