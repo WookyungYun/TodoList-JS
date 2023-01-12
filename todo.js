@@ -1,13 +1,41 @@
 const todoForm = document.querySelector(".todoForm");
 const todoInput = document.querySelector(".todoInput");
 const todos = document.querySelector(".todos");
+const selectView = document.querySelector("#selectView");
 
 let todoList = [];
+
+selectView.onchange = handleChange;
+
+function removeAllchild(div) {
+  while (div.hasChildNodes()) {
+    div.removeChild(div.firstChild);
+  }
+}
+
+function updateTodoList(todoList) {
+  const todo = todoList.map((todo) => todo.text);
+  todo.map((todo) => addTodo(todo));
+}
+
+function handleChange() {
+  removeAllchild(todos);
+  const selectValue = selectView.options[selectView.selectedIndex].value;
+  if (selectValue === "newest") {
+    todoList = todoList.sort((a, b) => b.date - a.date);
+    saveTodos();
+    updateTodoList(todoList);
+  } else if (selectValue === "oldest") {
+    todoList = todoList.sort((a, b) => a.date - b.date);
+    saveTodos();
+    updateTodoList(todoList);
+  }
+}
 
 function editTodo(e, todoItem) {
   const todoItemId = todoItem.parentNode.id;
   const editValue = todoItem.value;
-  let editDate = new Date();
+  let editDate = new Date().getTime();
   if (e.target.innerHTML === "수정") {
     e.target.innerHTML = "저장";
     todoItem.removeAttribute("disabled");
@@ -54,7 +82,7 @@ function createTodo(e) {
   e.preventDefault();
   const todo = todoInput.value;
   addTodo(todo);
-  let date = new Date();
+  let date = new Date().getTime();
   const todoObj = {
     id: todoList.length + 1,
     text: todo,
@@ -74,7 +102,6 @@ function localTodos() {
   if (getTodoList !== null) {
     const parsedTodoList = JSON.parse(getTodoList);
     parsedTodoList.forEach((todo) => {
-      console.log(todo);
       addTodo(todo.text);
       todoList.push(todo);
       saveTodos();
